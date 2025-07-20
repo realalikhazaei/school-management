@@ -90,14 +90,27 @@ const userSchema = new mongoose.Schema({
   },
   studentReport: [
     {
-      semester: Number,
-      type: String,
+      semester: {
+        type: Number,
+        enum: {
+          values: [1, 2],
+          message: 'Semester number must be either 1 or 2.',
+        },
+      },
+      type: {
+        type: String,
+        enum: {
+          values: ['midterm', 'final'],
+          message: 'Exam type must be either midterm or final.',
+        },
+      },
       lessonId: {
         type: mongoose.Schema.ObjectId,
         ref: 'School',
       },
       score: {
-        Number,
+        type: Number,
+        default: 0,
         min: 0,
         max: 20,
       },
