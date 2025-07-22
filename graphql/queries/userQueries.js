@@ -1,10 +1,29 @@
 const userQuery = `#graphql
-  getAllUsers(role: String): [User!]!
-  getUser(id: ID!, role: String): User!
+  getUsers(_id: ID, role: String): [User!]!
+  getMe: User
 `;
 
 const userMutation = `#graphql
-
+  updateUser(_id: ID!, input: InputUpdateUser!): User
+  updateMe(input: InputUpdateMe!): User
 `;
 
-export { userQuery, userMutation };
+const userInputs = `#graphql
+  input InputUpdateUser {
+    name: String
+    father: String
+    idCard: String
+    birthdate: String
+    role: String
+    photo: String
+    phone: String
+  }
+
+  input InputUpdateMe {
+    birthdate: String
+    photo: String
+    phone: String
+  }
+`;
+
+export { userQuery, userMutation, userInputs };

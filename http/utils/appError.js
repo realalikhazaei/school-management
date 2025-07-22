@@ -1,4 +1,4 @@
-const HttpError = class extends Error {
+const AppError = class extends Error {
   constructor(message, statusCode) {
     super();
     this.message = message;
@@ -10,4 +10,4 @@ const HttpError = class extends Error {
   }
 };
 
-export default HttpError;
+export default AppError;

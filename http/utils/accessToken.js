@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 import User from '../models/userModel.js';
-import HttpError from './httpError.js';
+import AppError from './appError.js';
 
 /**
  *
@@ -40,18 +40,34 @@ const signSendToken = async (res, userId, premiumExpires, message, statusCode = 
  * @returns
  */
 const verifyToken = async (accessToken, ...roles) => {
-  const payload = await promisify(jwt.verify)(accessToken, process.env.JWT_SECRET);
+  if (!accessToken) throw new AppError('Pleae login to access this route.', 401);
 
-  const user = await User.findById(payload.userId, 'name photo role school password');
-  if (!user) throw new HttpError('Your account has been deactivated.', 401);
+  let payload;
+  try {
+    payload = await promisify(jwt.verify)(accessToken, process.env.JWT_SECRET);
+  } catch (err) {
+    switch (err.message) {
+      case 'invalid signature':
+        throw new AppError('Your login session is wrong. Please login again.', 401);
+
+      case 'jwt expired':
+        throw new AppError('Your login session is expired. Please login again.', 401);
+    }
+  }
+
+  if (new Date(payload.premiumExpires) < new Date())
+    throw new AppError('The school subscription plan is expired.', 402);
+
+  const user = await User.findById(payload.userId);
+  if (!user) throw new AppError('Your account has been deactivated.', 401);
 
   const passwordChanged = user.passwordChangedAfter(payload.iat);
-  if (passwordChanged) throw new HttpError('Your password has been changed. Please login again.', 401);
+  if (passwordChanged) throw new AppError('Your password has been changed. Please login again.', 401);
 
   if (roles.length && !roles.includes(user.role))
-    throw new HttpError('You are not allowed to perform this action.', 403);
+    throw new AppError('You are not allowed to perform this action.', 403);
 
-  return user;
+  return user._doc;
 };
 
 export { signSendToken, verifyToken };

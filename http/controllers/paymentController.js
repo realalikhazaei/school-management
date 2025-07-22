@@ -1,5 +1,5 @@
 import Payment from '../models/paymentModel.js';
-import HttpError from '../utils/httpError.js';
+import AppError from '../utils/appError.js';
 
 const getAllPayments = async (req, res, next) => {
   const { schoolCode = undefined } = req.query;
@@ -15,7 +15,7 @@ const getAllPayments = async (req, res, next) => {
 const getPayment = async (req, res, next) => {
   const { _id: id } = req.params;
   const payment = await Payment.findById(id);
-  if (!payment) return next(new HttpError(`No document found with this ID ${id}`, 404));
+  if (!payment) return next(new AppError(`No document found with this ID ${id}`, 404));
 
   res.status(200).json({
     status: 'success',

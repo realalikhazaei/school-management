@@ -1,4 +1,4 @@
-import HttpError from '../utils/httpError.js';
+import AppError from '../utils/appError.js';
 
 const devErr = (err, res) => {
   return res.status(err.statusCode).json({

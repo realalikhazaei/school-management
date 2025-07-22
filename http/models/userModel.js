@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema({
     maxlength: [10, 'A phone number cannot be more than 10 characters.'],
     required: [true, 'Please provide your phone number.'],
     unique: [true, 'This phone number already exists.'],
+    set: function (val) {
+      return val.replace(/^(?:\+98|98|0)/, '');
+    },
   },
   school: {
     type: mongoose.Schema.ObjectId,
@@ -130,13 +133,6 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
-  next();
-});
-
-//Trim phone number
-userSchema.pre('save', function (next) {
-  if (!this.isModified('phone')) return next();
-  this.phone = this.phone.replace(/^(?:\+98|98|0)/, '');
   next();
 });
 

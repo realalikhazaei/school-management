@@ -1,12 +1,30 @@
 import User from '../../http/models/userModel.js';
+import { verifyToken } from '../../http/utils/accessToken.js';
+import { GraphQLError } from 'graphql';
 
-const getAllUsers = async (_, args, context) => {
+const getUsers = async (_, args, { accessToken }) => {
+  await verifyToken(accessToken, 'manager');
+
   const users = await User.find(args);
+  if (!users.length) throw new GraphQLError('No users found with the specifications.', { extensions: { code: 404 } });
+
   return users;
 };
 
-const getUser = (_, args, context) => User.findOne({ _id: args.id });
+const getMe = async (_, __, { accessToken }) => verifyToken(accessToken);
 
-export const userQuery = { getAllUsers, getUser };
+const updateUser = async (_, { _id, input }, { accessToken }) => {
+  await verifyToken(accessToken, 'manager');
 
-export const userMutation = {};
+  const user = await User.findByIdAndUpdate(_id, input, { new: true, runValidators: true });
+
+  return user;
+};
+
+const updateMe = async (_, args, { accessToken }) => {
+  const user = await User.findByIdAndUpdate(await verifyToken(accessToken)._id);
+};
+
+export const userQuery = { getUsers, getMe };
+
+export const userMutation = { updateUser };

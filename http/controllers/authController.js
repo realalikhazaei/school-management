@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import User from '../models/userModel.js';
 import School from '../models/schoolModel.js';
-import HttpError from '../utils/httpError.js';
+import AppError from '../utils/appError.js';
 import { signSendToken, verifyToken } from '../utils/accessToken.js';
 
 const signupSchool = async (req, res, next) => {
@@ -18,8 +18,8 @@ const signupSchool = async (req, res, next) => {
 const signupManager = async (req, res, next) => {
   const { school: schoolId } = req.body;
   const school = await School.findOne({ _id: schoolId, manager: undefined });
-  if (!school) return next(new HttpError(`There is no free school with this ID ${schoolId}.`, 404));
-  if (!school.isVerified) return next(new HttpError('School is not verified. Please contact support.', 401));
+  if (!school) return next(new AppError(`There is no free school with this ID ${schoolId}.`, 404));
+  if (!school.isVerified) return next(new AppError('School is not verified. Please contact support.', 401));
 
   const manager = await User.create({ ...req.body, role: 'manager', school: schoolId });
   school.manager = manager._id;
@@ -40,18 +40,18 @@ const signupUsers = async (req, res, next) => {
 
   res.status(201).json({
     status: 'success',
-    message: `${result.length} users have been added successfully.`,
+    message: `${result.length} user(s) have been added successfully.`,
   });
 };
 
 const login = async (req, res, next) => {
   const { idCard, password } = req.body;
-  if (!idCard) return next(new HttpError('Please provide your ID card number.', 400));
-  if (!password) return next(new HttpError('Please provide your password.', 400));
+  if (!idCard) return next(new AppError('Please provide your ID card number.', 400));
+  if (!password) return next(new AppError('Please provide your password.', 400));
 
   const user = await User.findOne({ idCard }, 'school password');
   const correct = await user?.comparePassword(password);
-  if (!user || !correct) return next(new HttpError('There is no user with this ID card number and password.', 404));
+  if (!user || !correct) return next(new AppError('There is no user with this ID card number and password.', 404));
 
   const { premiumExpires } = await School.findById(user.school, 'premiumExpires');
 
@@ -64,9 +64,9 @@ const updatePassword = async (req, res, next) => {
 
   const { currentPassword, newPassword, newPasswordConfirm } = req.body;
 
-  if (!currentPassword) return next(new HttpError('Please provide your current password.', 400));
+  if (!currentPassword) return next(new AppError('Please provide your current password.', 400));
   const correct = await user.comparePassword(currentPassword);
-  if (!correct) return next(new HttpError('Your current password is wrong.', 401));
+  if (!correct) return next(new AppError('Your current password is wrong.', 401));
 
   user.password = newPassword;
   user.passwordConfirm = newPasswordConfirm;
@@ -103,7 +103,7 @@ const resetPassword = async (req, res, next) => {
     { passwordResetToken: hashedToken, passwordResetExpires: { $gt: Date.now() } },
     'school',
   );
-  if (!user) return next(new HttpError('Your password reset token is either wrong or expired.', 401));
+  if (!user) return next(new AppError('Your password reset token is either wrong or expired.', 401));
 
   const { password, passwordConfirm } = req.body;
   user.password = password;

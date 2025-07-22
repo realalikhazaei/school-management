@@ -1,11 +1,22 @@
 import userSchema from './schema/userSchema.js';
-import allQueries from './queries/allQueries.js';
+import schoolSchema from './schema/schoolSchema.js';
+import { userQuery, userMutation, userInputs } from './queries/userQueries.js';
+import { schoolQuery } from './queries/schoolQueries.js';
 
 const typeDefs = `#graphql
   ${userSchema}
-
+  ${schoolSchema}
   
-  ${allQueries}
+  type Query {
+    ${userQuery}
+    ${schoolQuery}
+  }
+
+  type Mutation {
+    ${userMutation}
+  }
+
+  ${userInputs}
 `;
 
 export default typeDefs;

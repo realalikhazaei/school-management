@@ -11,7 +11,7 @@ import typeDefs from './graphql/typeDefs.js';
 import resolvers from './graphql/resolvers.js';
 import authRoutes from './http/routes/authRoutes.js';
 import paymentRoutes from './http/routes/paymentRoutes.js';
-import HttpError from './http/utils/httpError.js';
+import AppError from './http/utils/appError.js';
 import globalErrorHandler from './http/controllers/errorController.js';
 
 //Creating an HTTP server
@@ -36,7 +36,7 @@ app.use(
   '/api/v1/graphql',
   apolloMiddleware(apolloServer, {
     context: async ({ req }) => {
-      return { accessToken: req.cookies?.accessToken || req.headers?.authorization || null };
+      return { accessToken: req.cookies?.accessToken || req.headers.authorization?.split(' ')[1] || null };
     },
   }),
 );
@@ -44,7 +44,7 @@ app.use(
 //HTTP error handling
 app.use(/.*/, (req, res, next) => {
   const message = `Could not found this route ${req.originalUrl}`;
-  return next(new HttpError(message, 400));
+  return next(new AppError(message, 400));
 });
 app.use(globalErrorHandler);
 
