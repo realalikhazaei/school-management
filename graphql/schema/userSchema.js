@@ -4,7 +4,7 @@ const userSchema = `#graphql
     name: String!
     father: String!
     idCard: String!
-    birthdate: String
+    birthdate: Date
     role: String
     photo: String
     phone: String!

@@ -21,10 +21,14 @@ const updateUser = async (_, { _id, input }, { accessToken }) => {
   return user;
 };
 
-const updateMe = async (_, args, { accessToken }) => {
-  const user = await User.findByIdAndUpdate(await verifyToken(accessToken)._id);
+const updateMe = async (_, { input }, { accessToken }) => {
+  const { _id } = await verifyToken(accessToken);
+
+  const user = await User.findByIdAndUpdate(_id, input, { new: true, runValidators: true });
+
+  return user;
 };
 
 export const userQuery = { getUsers, getMe };
 
-export const userMutation = { updateUser };
+export const userMutation = { updateUser, updateMe };

@@ -1,5 +1,6 @@
 import { userQuery, userMutation } from './resolvers/userResolvers.js';
 import { schoolQuery } from './resolvers/schoolResolvers.js';
+import dateScalar from './scalars/dateScalar.js';
 
 const resolvers = {
   Query: {
@@ -10,6 +11,8 @@ const resolvers = {
   Mutation: {
     ...userMutation,
   },
+
+  Date: dateScalar,
 };
 
 export default resolvers;

@@ -4,6 +4,8 @@ import { userQuery, userMutation, userInputs } from './queries/userQueries.js';
 import { schoolQuery } from './queries/schoolQueries.js';
 
 const typeDefs = `#graphql
+  scalar Date
+
   ${userSchema}
   ${schoolSchema}
   

@@ -3,10 +3,10 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import morgan from 'morgan';
-import mongoose from 'mongoose';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware as apolloMiddleware } from '@as-integrations/express5';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { dbConnect } from './dbConnection.js';
 import typeDefs from './graphql/typeDefs.js';
 import resolvers from './graphql/resolvers.js';
 import authRoutes from './http/routes/authRoutes.js';
@@ -49,14 +49,7 @@ app.use(/.*/, (req, res, next) => {
 app.use(globalErrorHandler);
 
 //Connecting to the database
-mongoose.connection.once('open', () => {
-  console.log('Connection to the database has been established'); //eslint-disable-line
-});
-mongoose.connection.on('error', err => {
-  console.log('Could not connect to the database'); //eslint-disable-line
-  console.log(err); //eslint-disable-line
-});
-await mongoose.connect(process.env.DATABASE_CONNECT);
+await dbConnect();
 
 //Starting the HTTP server
 const port = process.env.PORT || 5000;
