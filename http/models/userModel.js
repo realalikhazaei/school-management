@@ -89,7 +89,7 @@ const userSchema = new mongoose.Schema({
       ref: 'Class',
     },
     classGrade: Number,
-    classTitle: String,
+    classAlias: String,
   },
   studentReport: [
     {

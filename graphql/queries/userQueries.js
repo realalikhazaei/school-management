@@ -4,12 +4,12 @@ const userQuery = `#graphql
 `;
 
 const userMutation = `#graphql
-  updateUser(_id: ID!, input: InputUpdateUser!): User
-  updateMe(input: InputUpdateMe!): User
+  updateUser(_id: ID!, input: UpdateUserInput!): User
+  updateMe(input: UpdateMeInput!): User
 `;
 
 const userInputs = `#graphql
-  input InputUpdateUser {
+  input UpdateUserInput {
     name: String
     father: String
     idCard: String
@@ -19,7 +19,7 @@ const userInputs = `#graphql
     phone: String
   }
 
-  input InputUpdateMe {
+  input UpdateMeInput {
     birthdate: String
     photo: String
     phone: String

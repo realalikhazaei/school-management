@@ -16,7 +16,7 @@ const userSchema = `#graphql
   type studentClass {
     classId: ID!
     classGrade: Int!
-    classTitle: String!
+    classAlias: String!
   }
 
   type studentReport {

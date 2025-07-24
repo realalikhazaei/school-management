@@ -6,7 +6,7 @@ const getMySchool = async (_, __, { accessToken }) => {
 
   const school = await School.findById(user.school).populate({ path: 'manager', select: 'name photo' });
 
-  return school;
+  return school._doc;
 };
 
 export const schoolQuery = { getMySchool };

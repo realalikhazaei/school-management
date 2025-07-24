@@ -29,10 +29,15 @@ const signupManager = async (req, res, next) => {
 };
 
 const signupUsers = async (req, res, next) => {
+  const accessToken = req.cookies?.accessToken || req.headers.authorization?.split(' ')[1];
+  const { school } = await verifyToken(accessToken, 'manager');
+
   const { users } = req.body;
-  users.forEach(el => {
+  users?.forEach(el => {
+    if (el.role === 'manager' || el.role === 'admin') return next(new AppError('User role is invalid.', 403));
     el.password = el.idCard;
     el.passwordConfirm = el.idCard;
+    el.school = school;
     return;
   });
 

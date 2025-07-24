@@ -18,7 +18,7 @@ const updateUser = async (_, { _id, input }, { accessToken }) => {
 
   const user = await User.findByIdAndUpdate(_id, input, { new: true, runValidators: true });
 
-  return user;
+  return user._doc;
 };
 
 const updateMe = async (_, { input }, { accessToken }) => {
@@ -26,7 +26,7 @@ const updateMe = async (_, { input }, { accessToken }) => {
 
   const user = await User.findByIdAndUpdate(_id, input, { new: true, runValidators: true });
 
-  return user;
+  return user._doc;
 };
 
 export const userQuery = { getUsers, getMe };

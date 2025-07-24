@@ -1,7 +1,25 @@
 import mongoose from 'mongoose';
 
-const activitySchema = new mongoose.Schema({});
+const lessonListSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    trim: true,
+  },
+  grade: {
+    type: Number,
+    min: [1, 'Grade cannot be less than 1.'],
+    max: [12, 'Grade cannot be more than 12.'],
+    validate: {
+      validator: function (val) {
+        return val % 1 === 0;
+      },
+      message: 'Please enter an integer between 1 and 12.',
+    },
+  },
+});
 
-const Activity = mongoose.model('Activity', activitySchema);
+lessonListSchema.index({ title: 1, grade: 1 }, { unique: true });
 
-export default Activity;
+const LessonList = mongoose.model('LessonList', lessonListSchema);
+
+export default LessonList;
