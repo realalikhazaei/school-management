@@ -5,6 +5,7 @@ const userQuery = `#graphql
 
 const userMutation = `#graphql
   updateUser(_id: ID!, input: UpdateUserInput!): User
+  deleteUsers(_ids: [ID!]!): String
   updateMe(input: UpdateMeInput!): User
 `;
 

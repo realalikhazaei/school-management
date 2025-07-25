@@ -5,6 +5,7 @@ const lessonListQuery = `#graphql
 const lessonListMutation = `#graphql
   addLessonList(input: [LessonListInput!]!): [LessonList!]
   updateLessonList(input: [LessonListInput!]!): [LessonList!]
+  deleteLessonList(_ids: [ID!]!): String
 `;
 
 const lessonListInput = `#graphql

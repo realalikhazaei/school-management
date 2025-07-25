@@ -39,6 +39,17 @@ const updateLessonList = async (_, { input }, { accessToken }) => {
   return res;
 };
 
+const deleteLessonList = async (_, { _ids }, { accessToken }) => {
+  await verifyToken(accessToken, 'manager');
+
+  const res = await LessonList.deleteMany({ _id: { $in: _ids } });
+  console.log(res);
+  if (!res.deletedCount)
+    throw new GraphQLError('No documents found with the specified IDs.', { extensions: { code: 404 } });
+
+  return `${res.deletedCount} lesson(s) have been deleted successfully from the list.`;
+};
+
 export const lessonListQuery = { getLessonList };
 
-export const lessonListMutation = { addLessonList, updateLessonList };
+export const lessonListMutation = { addLessonList, updateLessonList, deleteLessonList };
