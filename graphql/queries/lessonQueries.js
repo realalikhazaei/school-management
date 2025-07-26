@@ -1,7 +1,11 @@
-const lessonQuery = `#graphql`;
+const lessonQuery = `#graphql
+  getAllLessons(grade: Int, teacher: ID): [Lesson!]
+  getLesson(_id: ID!): Lesson
+`;
 
 const lessonMutation = `#graphql
   addLessons(input: [AddLessonsInput!]!): [Lesson!]
+  updateLessons(input: [UpdateLessonsInput!]!): [Lesson!]
 `;
 
 const lessonInput = `#graphql
@@ -13,6 +17,17 @@ const lessonInput = `#graphql
     coefficient: Int
     weeklyTimes: [String!]!
     teacher: ID!
+  }
+  
+  input UpdateLessonsInput {
+    _id: ID!
+    class: ID
+    title: String
+    grade: Int
+    field: String
+    coefficient: Int
+    weeklyTimes: [String!]
+    teacher: ID
   }
 `;
 

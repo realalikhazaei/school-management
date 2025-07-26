@@ -1,7 +1,7 @@
 import { userQuery, userMutation } from './resolvers/userResolvers.js';
 import { schoolQuery } from './resolvers/schoolResolvers.js';
 import { classQuery, classMutation } from './resolvers/classResolvers.js';
-import { lessonMutation } from './resolvers/lessonResolvers.js';
+import { lessonQuery, lessonMutation } from './resolvers/lessonResolvers.js';
 import { lessonListQuery, lessonListMutation } from './resolvers/lessonListResolvers.js';
 import dateScalar from './scalars/dateScalar.js';
 
@@ -10,6 +10,7 @@ const resolvers = {
     ...userQuery,
     ...schoolQuery,
     ...classQuery,
+    ...lessonQuery,
     ...lessonListQuery,
   },
 

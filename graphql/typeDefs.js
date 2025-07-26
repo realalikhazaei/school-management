@@ -25,6 +25,7 @@ const typeDefs = `#graphql
     ${userQuery}
     ${schoolQuery}
     ${classQuery}
+    ${lessonQuery}
     ${lessonListQuery}
   }
 

@@ -1,5 +1,6 @@
 const userQuery = `#graphql
-  getUsers(_id: ID, role: String): [User!]!
+  getAllUsers(_id: ID, role: String): [User!]
+  getUser(_id: ID!): User
   getMe: User
 `;
 
