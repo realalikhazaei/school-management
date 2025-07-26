@@ -13,10 +13,13 @@ const getUsers = async (_, args, { accessToken }) => {
 
 const getMe = async (_, __, { accessToken }) => verifyToken(accessToken);
 
-const updateUser = async (_, { _id, input }, { accessToken }) => {
+const updateUser = async (_, { input }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
+  const { _id } = input;
+  delete input._id;
 
   const user = await User.findByIdAndUpdate(_id, input, { new: true, runValidators: true });
+  if (!user) throw new GraphQLError('There is no user with this ID.', { extensions: { code: 404 } });
 
   return user._doc;
 };
@@ -33,7 +36,6 @@ const deleteUsers = async (_, { _ids }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
 
   const res = await User.deleteMany({ _id: { $in: _ids } });
-  console.log(res);
   if (!res.deletedCount)
     throw new GraphQLError('No documents found with the specified IDs.', { extensions: { code: 404 } });
 

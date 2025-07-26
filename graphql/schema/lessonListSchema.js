@@ -3,6 +3,8 @@ const lessonListSchema = `#graphql
     _id: ID!
     title: String!
     grade: Int!
+    field: String
+    coefficient: Int!
   }
 `;
 

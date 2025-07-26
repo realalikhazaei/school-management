@@ -18,7 +18,7 @@ import globalErrorHandler from './http/controllers/errorController.js';
 const app = express();
 const httpServer = http.createServer(app);
 
-//Adding necessary middlewares
+//Adding necessary middlewares FIXME Add fields filter
 app.use(cors(), express.json(), morgan('dev'));
 
 //Creating and starting apollo server

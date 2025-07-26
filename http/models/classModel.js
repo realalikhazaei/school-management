@@ -22,21 +22,19 @@ const classSchema = new mongoose.Schema({
     ref: 'School',
     required: [true, 'School ID is a required field.'],
   },
+  field: String,
   timetable: [
     {
       lessonId: {
         type: mongoose.Schema.ObjectId,
         ref: 'Lesson',
-        required: [true, 'Lesson ID is a required field.'],
       },
       lessonTitle: {
         type: String,
         trim: true,
-        required: [true, 'Lesson title is a required field.'],
       },
       weeklyTimes: {
         type: [String],
-        required: [true, 'Lesson weekly times is a required field.'],
         validate: {
           validator: function (val) {
             return val.length > 0;

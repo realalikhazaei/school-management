@@ -4,9 +4,11 @@ const lessonListSchema = new mongoose.Schema({
   title: {
     type: String,
     trim: true,
+    required: [true, 'Please specify lesson title.'],
   },
   grade: {
     type: Number,
+    required: [true, 'Please specify the grade.'],
     min: [1, 'Grade cannot be less than 1.'],
     max: [12, 'Grade cannot be more than 12.'],
     validate: {
@@ -15,6 +17,11 @@ const lessonListSchema = new mongoose.Schema({
       },
       message: 'Please enter an integer between 1 and 12.',
     },
+  },
+  field: String,
+  coefficient: {
+    type: Number,
+    default: 1,
   },
 });
 

@@ -13,7 +13,6 @@ const getLessonList = async (_, args, { accessToken }) => {
 const addLessonList = async (_, { input }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
 
-  //FIXME ACID transaction needed
   let lessonList;
   try {
     lessonList = await LessonList.create(input);
@@ -28,10 +27,9 @@ const addLessonList = async (_, { input }, { accessToken }) => {
 const updateLessonList = async (_, { input }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
 
-  //FIXME ACID transaction needed
   const query = input.map(
-    async ({ _id, title, grade }) =>
-      await LessonList.findByIdAndUpdate(_id, { title, grade }, { new: true, runValidators: true }),
+    async ({ _id, title, grade, field, coefficient }) =>
+      await LessonList.findByIdAndUpdate(_id, { title, grade, field, coefficient }, { new: true, runValidators: true }),
   );
 
   const res = await Promise.all(query);
@@ -43,7 +41,6 @@ const deleteLessonList = async (_, { _ids }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
 
   const res = await LessonList.deleteMany({ _id: { $in: _ids } });
-  console.log(res);
   if (!res.deletedCount)
     throw new GraphQLError('No documents found with the specified IDs.', { extensions: { code: 404 } });
 

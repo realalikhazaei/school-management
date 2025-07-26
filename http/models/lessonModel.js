@@ -9,8 +9,25 @@ const lessonSchema = new mongoose.Schema({
   title: {
     type: String,
     trim: true,
+    required: [true, 'Please specify the lesson title.'],
   },
-  grade: Number,
+  grade: {
+    type: Number,
+    required: [true, 'Please specify the grade.'],
+    min: [1, 'Grade cannot be less than 1.'],
+    max: [12, 'Grade cannot be more than 12.'],
+    validate: {
+      validator: function (val) {
+        return val % 1 === 0;
+      },
+      message: 'Please enter an integer between 1 and 12.',
+    },
+  },
+  field: String,
+  coefficient: {
+    type: Number,
+    default: 1,
+  },
   weeklyTimes: {
     type: [String],
     required: [true, 'Lesson weekly times is a required field.'],

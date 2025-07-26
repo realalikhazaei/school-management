@@ -4,13 +4,14 @@ const userQuery = `#graphql
 `;
 
 const userMutation = `#graphql
-  updateUser(_id: ID!, input: UpdateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
   deleteUsers(_ids: [ID!]!): String
   updateMe(input: UpdateMeInput!): User
 `;
 
-const userInputs = `#graphql
+const userInput = `#graphql
   input UpdateUserInput {
+    _id: ID!
     name: String
     father: String
     idCard: String
@@ -27,4 +28,4 @@ const userInputs = `#graphql
   }
 `;
 
-export { userQuery, userMutation, userInputs };
+export { userQuery, userMutation, userInput };

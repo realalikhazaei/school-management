@@ -1,18 +1,28 @@
 const lessonListQuery = `#graphql
-  getLessonList(grade: Int): [LessonList]
+  getLessonList(field: String ,grade: Int): [LessonList]
 `;
 
 const lessonListMutation = `#graphql
-  addLessonList(input: [LessonListInput!]!): [LessonList!]
-  updateLessonList(input: [LessonListInput!]!): [LessonList!]
+  addLessonList(input: [AddLessonListInput!]!): [LessonList!]
+  updateLessonList(input: [UpdateLessonListInput!]!): [LessonList!]
   deleteLessonList(_ids: [ID!]!): String
 `;
 
 const lessonListInput = `#graphql
-  input LessonListInput {
+  input AddLessonListInput {
     _id: ID
     title: String!
     grade: Int!
+    field: String
+    coefficient: Int
+  }
+
+  input UpdateLessonListInput {
+    _id: ID
+    title: String
+    grade: Int
+    field: String
+    coefficient: Int
   }
 `;
 

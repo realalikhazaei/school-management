@@ -51,7 +51,6 @@ const userSchema = new mongoose.Schema({
   school: {
     type: mongoose.Schema.ObjectId,
     ref: 'School',
-    required: [true, 'Please provide your school ID.'],
   },
   password: {
     type: String,
