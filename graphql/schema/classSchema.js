@@ -5,7 +5,7 @@ const classSchema = `#graphql
     grade: Int!
     school: ID!
     field: String
-    timetable: Timetable
+    timetable: [Timetable]
   }
 
   type Timetable {

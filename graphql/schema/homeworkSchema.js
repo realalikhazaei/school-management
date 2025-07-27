@@ -19,3 +19,5 @@ const homeworkSchema = `#graphql
     score: Int
   }
 `;
+
+export default homeworkSchema;

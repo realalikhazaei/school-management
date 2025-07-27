@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import Class from '../../http/models/classModel.js';
+import Lesson from '../../http/models/lessonModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 
 const getAllClasses = async (_, args, { accessToken }) => {
@@ -20,9 +21,15 @@ const getClass = async (_, { _id }, { accessToken }) => {
   return classDoc._doc;
 };
 
-/* const getMyClass = async (_, __, {accessToken}) => {
-  const 
-} */
+const getClassTimetable = async (_, { _id }, { accessToken }) => {
+  await verifyToken(accessToken, 'manager');
+
+  const classDoc = await Class.findById(_id);
+  if (!classDoc.timetable.length)
+    throw new GraphQLError('Class timetable is not determined yet.', { extensions: { code: 404 } });
+
+  return classDoc._doc;
+};
 
 const createClass = async (_, { input }, { accessToken }) => {
   const { school } = await verifyToken(accessToken, 'manager');
@@ -52,6 +59,23 @@ const deleteClass = async (_, { _id }, { accessToken }) => {
   return `Class ${classDoc.alias} has been deleted successfully.`;
 };
 
-export const classQuery = { getAllClasses, getClass };
+const determineClassTimetable = async (_, { _id }, { accessToken }) => {
+  await verifyToken(accessToken, 'manager');
 
-export const classMutation = { createClass, updateClass, deleteClass };
+  const classDoc = await Class.findById(_id).populate({ path: 'lessons', select: 'title weeklyTimes' });
+  if (!classDoc) throw new GraphQLError('There is no class with this ID.', { extensions: { code: 404 } });
+
+  const timetable = classDoc.lessons.reduce((acc, { _id: lessonId, title: lessonTitle, weeklyTimes }) => {
+    acc.push({ lessonId, lessonTitle, weeklyTimes });
+    return acc;
+  }, []);
+
+  classDoc.timetable = timetable;
+  await classDoc.save({ validateModifiedOnly: true });
+
+  return classDoc._doc;
+};
+
+export const classQuery = { getAllClasses, getClass, getClassTimetable };
+
+export const classMutation = { createClass, updateClass, deleteClass, determineClassTimetable };
