@@ -44,11 +44,10 @@ const updateMe = async (_, { input }, { accessToken }) => {
 const deleteUsers = async (_, { _ids }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
 
-  const res = await User.deleteMany({ _id: { $in: _ids } });
-  if (!res.deletedCount)
-    throw new GraphQLError('No documents found with the specified IDs.', { extensions: { code: 404 } });
+  const { deletedCount } = await User.deleteMany({ _id: { $in: _ids } });
+  if (!deletedCount) throw new GraphQLError('No users found with the specified IDs.', { extensions: { code: 404 } });
 
-  return `${res.deletedCount} user(s) have been deleted successfully.`;
+  return `${deletedCount} user(s) have been deleted successfully.`;
 };
 
 export const userQuery = { getAllUsers, getUser, getMe };

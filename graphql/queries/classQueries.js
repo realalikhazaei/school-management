@@ -7,6 +7,7 @@ const classQuery = `#graphql
 const classMutation = `#graphql
   createClass(input: CreateClassInput!): Class
   updateClass(input: UpdateClassInput!): Class
+  deleteClass(_id: ID!): String
 `;
 
 const classInput = `#graphql

@@ -43,6 +43,15 @@ const updateClass = async (_, { input }, { accessToken }) => {
   return classDoc._doc;
 };
 
+const deleteClass = async (_, { _id }, { accessToken }) => {
+  await verifyToken(accessToken, 'manager');
+
+  const classDoc = await Class.findByIdAndDelete(_id);
+  if (!classDoc) throw new GraphQLError('No class document found with this ID.', { extensions: { code: 404 } });
+
+  return `Class ${classDoc.alias} has been deleted successfully.`;
+};
+
 export const classQuery = { getAllClasses, getClass };
 
-export const classMutation = { createClass, updateClass };
+export const classMutation = { createClass, updateClass, deleteClass };

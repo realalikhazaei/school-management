@@ -1,11 +1,12 @@
 const lessonQuery = `#graphql
-  getAllLessons(grade: Int, teacher: ID): [Lesson!]
+  getAllLessons(field: String, grade: Int, teacher: ID): [Lesson!]
   getLesson(_id: ID!): Lesson
 `;
 
 const lessonMutation = `#graphql
   addLessons(input: [AddLessonsInput!]!): [Lesson!]
   updateLessons(input: [UpdateLessonsInput!]!): [Lesson!]
+  deleteLessons(_ids: [ID!]!): String
 `;
 
 const lessonInput = `#graphql

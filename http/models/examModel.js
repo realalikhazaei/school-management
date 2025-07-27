@@ -1,7 +1,60 @@
 import mongoose from 'mongoose';
 
-const activitySchema = new mongoose.Schema({});
+const examSchema = new mongoose.Schema(
+  {
+    semester: {
+      type: Number,
+      required: [true, 'Please specify the semester number.'],
+      enum: {
+        values: [1, 2],
+        message: 'Semester must be either 1 or 2.',
+      },
+    },
+    type: {
+      type: String,
+      required: [true, 'Please specify the exam type.'],
+      enum: {
+        values: ['midterm', 'final'],
+        message: 'Exam type must be either midterm or final.',
+      },
+    },
+    lessonId: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Lesson',
+      required: [true, 'Lesson ID is a required field.'],
+    },
+    lessonTitle: String,
+    scores: [
+      {
+        studentId: {
+          type: mongoose.Schema.ObjectId,
+          ref: 'User',
+          required: [true, 'Please provide the student ID.'],
+        },
+        studentFirstname: {
+          type: String,
+          trim: true,
+          required: [true, 'Please provide the student first name.'],
+        },
+        studentLastname: {
+          type: String,
+          trim: true,
+          required: [true, 'Please provide the student last name.'],
+        },
+        score: {
+          type: Number,
+          default: 0,
+          min: [0, 'Score cannot be less than 0.'],
+          max: [20, 'Score cannot be more than 20.'],
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  },
+);
 
-const Activity = mongoose.model('Activity', activitySchema);
+const Exam = mongoose.model('Exam', examSchema);
 
-export default Activity;
+export default Exam;

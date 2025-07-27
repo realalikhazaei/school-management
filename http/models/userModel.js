@@ -3,16 +3,15 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
 const userSchema = new mongoose.Schema({
-  name: {
+  firstname: {
     type: String,
     trim: true,
-    required: [true, 'Please provide your name.'],
-    validate: {
-      validator: function (val) {
-        return val.split(' ').length >= 2;
-      },
-      message: 'Please provide your full name.',
-    },
+    required: [true, 'Please provide your first name.'],
+  },
+  lastname: {
+    type: String,
+    trim: true,
+    required: [true, 'Please provide your last name.'],
   },
   father: {
     type: String,
@@ -113,11 +112,15 @@ const userSchema = new mongoose.Schema({
       score: {
         type: Number,
         default: 0,
-        min: 0,
-        max: 20,
+        min: [0, 'Score cannot be less than 0.'],
+        max: [20, 'Score cannot be more than 20.'],
       },
     },
   ],
+  __v: {
+    type: Number,
+    default: 1,
+  },
 });
 
 //Hashing password

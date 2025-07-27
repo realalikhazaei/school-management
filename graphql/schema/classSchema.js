@@ -1,5 +1,6 @@
 const classSchema = `#graphql
   type Class {
+    _id: ID!
     alias: String
     grade: Int!
     school: ID!

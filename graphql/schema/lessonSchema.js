@@ -1,5 +1,6 @@
 const lessonSchema = `#graphql
   type Lesson {
+    _id: ID!
     class: ID!
     title: String!
     grade: Int!

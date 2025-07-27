@@ -30,7 +30,7 @@ const updateLessonList = async (_, { input }, { accessToken }) => {
   const query = input.map(async input => {
     const { _id } = input;
     delete input._id;
-    await LessonList.findByIdAndUpdate(_id, input, { new: true, runValidators: true });
+    return await LessonList.findByIdAndUpdate(_id, input, { new: true, runValidators: true });
   });
 
   const lessonList = await Promise.all(query);
@@ -43,11 +43,11 @@ const updateLessonList = async (_, { input }, { accessToken }) => {
 const deleteLessonList = async (_, { _ids }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
 
-  const res = await LessonList.deleteMany({ _id: { $in: _ids } });
-  if (!res.deletedCount)
+  const { deletedCount } = await LessonList.deleteMany({ _id: { $in: _ids } });
+  if (!deletedCount)
     throw new GraphQLError('No documents found with the specified IDs.', { extensions: { code: 404 } });
 
-  return `${res.deletedCount} lesson(s) have been deleted successfully from the list.`;
+  return `${deletedCount} lesson(s) have been deleted successfully from the list.`;
 };
 
 export const lessonListQuery = { getLessonList };

@@ -1,4 +1,4 @@
-import mongoose, { mongo } from 'mongoose';
+import mongoose from 'mongoose';
 
 const childActivitySchema = new mongoose.Schema({
   studentId: {
@@ -6,30 +6,35 @@ const childActivitySchema = new mongoose.Schema({
     ref: 'User',
     required: [true, 'Please provide the student ID.'],
   },
-  studentName: {
+  studentFirstname: {
     type: String,
     trim: true,
-    required: [true, 'Please provide the student name.'],
+    required: [true, 'Please provide the student first name.'],
+  },
+  studentLastname: {
+    type: String,
+    trim: true,
+    required: [true, 'Please provide the student last name.'],
   },
 });
 
-const activitySchema = new mongoose.Schema({
-  absences: [childActivitySchema],
-  points: [childActivitySchema],
-  penalties: [childActivitySchema],
-  date: {
-    type: Date,
+const activitySchema = new mongoose.Schema(
+  {
+    absences: [childActivitySchema],
+    points: [childActivitySchema],
+    penalties: [childActivitySchema],
+    lessonId: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Lesson',
+      required: [true, 'Please provide the lesson ID.'],
+    },
+    lessonTitle: String,
+    lessonWeeklyTime: String,
   },
-  lessonId: {
-    type: mongoose.Schema.ObjectId,
+  {
+    timestamps: true,
   },
-  lessonWeekday: {
-    type: String,
-  },
-  lessonTitle: {
-    type: String,
-  },
-});
+);
 
 const Activity = mongoose.model('Activity', activitySchema);
 
