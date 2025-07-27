@@ -47,6 +47,7 @@ const homeworkSchema = new mongoose.Schema(
     images: [String],
     deadline: {
       type: Date,
+      required: [true, 'Please specify a deadline for homework.'],
       validate: {
         validator: function (val) {
           return val > Date.now();

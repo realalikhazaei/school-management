@@ -29,7 +29,10 @@ const activitySchema = new mongoose.Schema(
       required: [true, 'Please provide the lesson ID.'],
     },
     lessonTitle: String,
-    lessonWeeklyTime: String,
+    lessonWeeklyTime: {
+      type: String,
+      required: [true, 'Please specify lesson weekly time.'],
+    },
   },
   {
     timestamps: true,
