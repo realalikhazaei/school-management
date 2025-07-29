@@ -123,6 +123,9 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+//Compound index for user name
+userSchema.index({ firstname: 1, lastname: 1 });
+
 //Hashing password
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();

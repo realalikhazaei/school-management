@@ -3,11 +3,11 @@ import Class from '../../http/models/classModel.js';
 import Lesson from '../../http/models/lessonModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 
-const getAllClasses = async (_, args, { accessToken }) => {
+const getAllClasses = async (_, { input }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
 
-  const classes = await Class.find(args);
-  if (!classes.length) throw new GraphQLError('No classes found.', { extensions: { code: 404 } });
+  const classes = await Class.find(input);
+  if (!classes.length) throw new GraphQLError('No classes found with the criteria.', { extensions: { code: 404 } });
 
   return classes;
 };
@@ -21,8 +21,32 @@ const getClass = async (_, { _id }, { accessToken }) => {
   return classDoc._doc;
 };
 
+const getMyClass = async (_, __, { accessToken }) => {
+  const {
+    studentClass: { classId: _id },
+  } = await verifyToken(accessToken, 'student');
+  if (!_id) throw new GraphQLError('No class is determined for you yet.', { extensions: { code: 404 } });
+
+  const classDoc = await Class.findById(_id);
+  if (!classDoc) throw new GraphQLError('Your class does not exist.', { extensions: { code: 404 } });
+
+  return classDoc._doc;
+};
+
 const getClassTimetable = async (_, { _id }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
+
+  const classDoc = await Class.findById(_id);
+  if (!classDoc.timetable.length)
+    throw new GraphQLError('Class timetable is not determined yet.', { extensions: { code: 404 } });
+
+  return classDoc._doc;
+};
+
+const getMyTimetable = async (_, __, { accessToken }) => {
+  const {
+    studentClass: { classId: _id },
+  } = await verifyToken(accessToken, 'student');
 
   const classDoc = await Class.findById(_id);
   if (!classDoc.timetable.length)
@@ -76,6 +100,6 @@ const determineClassTimetable = async (_, { _id }, { accessToken }) => {
   return classDoc._doc;
 };
 
-export const classQuery = { getAllClasses, getClass, getClassTimetable };
+export const classQuery = { getAllClasses, getClass, getMyClass, getMyTimetable, getClassTimetable };
 
 export const classMutation = { createClass, updateClass, deleteClass, determineClassTimetable };

@@ -1,7 +1,8 @@
 const userSchema = `#graphql
   type User {
     _id: ID!
-    name: String!
+    firstname: String!
+    lastname: String!
     father: String!
     idCard: String!
     birthdate: Date

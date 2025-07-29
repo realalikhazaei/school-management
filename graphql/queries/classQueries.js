@@ -1,9 +1,9 @@
 const classQuery = `#graphql
-  getAllClasses(field: String, grade: Int): [Class!]
+  getAllClasses(input: GetAllClassesInput): [Class!]
   getClass(_id: ID!): Class
+  getMyClass: Class
   getClassTimetable(_id: ID!): Class
-  # getMyTimetable: Class
-  # getMyClass: Class
+  getMyTimetable: Class
 `;
 
 const classMutation = `#graphql
@@ -14,6 +14,11 @@ const classMutation = `#graphql
 `;
 
 const classInput = `#graphql
+  input GetAllClassesInput {
+    field: String
+    grade: Int
+  }
+
   input CreateClassInput {
     alias: String
     grade: Int!

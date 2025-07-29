@@ -2,11 +2,17 @@ import { GraphQLError } from 'graphql';
 import Lesson from '../../http/models/lessonModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 
-const getAllLessons = async (_, args, { accessToken }) => {
+const getAllLessons = async (_, { input }, { accessToken }) => {
+  //Verify the user, take user ID and user role
   const { _id: teacher, role } = await verifyToken(accessToken, 'manager', 'teacher');
-  let criteria = args;
+
+  //Assign the inputs to a variable for better use
+  const criteria = input || {};
+
+  //Add a propertyin case of being teacher
   if (role === 'teacher') criteria.teacher = teacher;
 
+  //Find lessons with the criteria
   const lessons = await Lesson.find(criteria);
   if (!lessons.length) throw new GraphQLError('No lesson found with the criteria.', { extensions: { code: 404 } });
 

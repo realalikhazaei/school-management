@@ -1,5 +1,5 @@
 const lessonListQuery = `#graphql
-  getLessonList(field: String ,grade: Int): [LessonList]
+  getLessonList(input: GetLessonListInput): [LessonList]
 `;
 
 const lessonListMutation = `#graphql
@@ -9,6 +9,11 @@ const lessonListMutation = `#graphql
 `;
 
 const lessonListInput = `#graphql
+  input GetLessonListInput {
+    field: String
+    grade: Int
+  }
+
   input AddLessonListInput {
     _id: ID
     title: String!

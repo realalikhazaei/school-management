@@ -4,7 +4,7 @@ const examSchema = `#graphql
     semester: Int!
     type: String!
     lessonId: ID!
-    lessonTitle: String
+    lessonTitle: String!
     scores: [Score]
     createdAt: Date!
     updatedAt: Date!

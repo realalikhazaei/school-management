@@ -1,12 +1,44 @@
 import User from '../../http/models/userModel.js';
+import Lesson from '../../http/models/lessonModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 import { GraphQLError } from 'graphql';
 
-const getAllUsers = async (_, args, { accessToken }) => {
-  await verifyToken(accessToken, 'manager');
+const getAllUsers = async (_, { input }, { accessToken }) => {
+  //Verify the user, take user ID and user role
+  const { _id: teacher, role } = await verifyToken(accessToken, 'manager', 'teacher');
 
-  const users = await User.find(args);
-  if (!users.length) throw new GraphQLError('No users found with the specifications.', { extensions: { code: 404 } });
+  //Assign the inputs to a variable for better use
+  const criteria = input || {};
+
+  if (role === 'teacher') {
+    //Set the queries user role to student
+    criteria.role = 'student';
+
+    //Find the classes of the teacher
+    const lessons = await Lesson.find({ teacher }, 'class');
+    const classIds = lessons.map(el => el.class.toString());
+
+    //Throw an error if the teacher classes does not match the input class ID
+    if (criteria?.classId && !classIds.includes(incriteriaput.classId))
+      throw new GraphQLError('You are not the teacher of this class.', { extensions: { code: 403 } });
+
+    //Assign the teacher class IDs to the queried class
+    if (!criteria.classId) criteria.classId = { $in: classIds };
+  }
+
+  if (criteria.classId) {
+    //Add the classId as a nested field to the studentClass
+    criteria['studentClass.classId'] = criteria.classId;
+
+    //Remove the main classId field from criteria
+    delete criteria.classId;
+  }
+
+  console.log(criteria);
+
+  //Find users with the criteria
+  const users = await User.find(criteria);
+  if (!users.length) throw new GraphQLError('No users found with the criteria.', { extensions: { code: 404 } });
 
   return users;
 };
@@ -50,6 +82,22 @@ const deleteUsers = async (_, { _ids }, { accessToken }) => {
   return `${deletedCount} user(s) have been deleted successfully.`;
 };
 
+const determineStudentsClass = async (_, { input }, { accessToken }) => {
+  await verifyToken(accessToken, 'manager');
+  const { students } = input;
+  delete input.students;
+
+  const determinedClass = await User.updateMany(
+    { _id: { $in: students } },
+    { studentClass: input },
+    { runValidators: true },
+  );
+  if (!determinedClass.matchedCount)
+    throw new GraphQLError('No students found with the specified IDs.', { extensions: { code: 404 } });
+
+  return `${determinedClass.modifiedCount} student(s) have been added to the class ${input.classAlias}.`;
+};
+
 export const userQuery = { getAllUsers, getUser, getMe };
 
-export const userMutation = { updateUser, updateMe, deleteUsers };
+export const userMutation = { updateUser, updateMe, deleteUsers, determineStudentsClass };

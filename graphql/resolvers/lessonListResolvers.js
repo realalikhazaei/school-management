@@ -2,10 +2,10 @@ import { GraphQLError } from 'graphql';
 import LessonList from '../../http/models/lessonListModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 
-const getLessonList = async (_, args, { accessToken }) => {
+const getLessonList = async (_, { input }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
 
-  const lessonList = await LessonList.find(args);
+  const lessonList = await LessonList.find(input);
 
   return lessonList;
 };

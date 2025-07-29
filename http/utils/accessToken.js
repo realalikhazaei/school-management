@@ -59,7 +59,7 @@ const verifyToken = async (accessToken, ...roles) => {
     throw new AppError('The school subscription plan is expired.', 402);
 
   const user = await User.findById(payload.userId);
-  if (!user) throw new AppError('Your account has been deactivated.', 401);
+  if (!user) throw new AppError('Your account has been either deleted or deactivated.', 401);
 
   const passwordChanged = user.passwordChangedAfter(payload.iat);
   if (passwordChanged) throw new AppError('Your password has been changed. Please login again.', 401);

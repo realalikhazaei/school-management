@@ -23,7 +23,11 @@ const examSchema = new mongoose.Schema(
       ref: 'Lesson',
       required: [true, 'Lesson ID is a required field.'],
     },
-    lessonTitle: String,
+    lessonTitle: {
+      type: String,
+      trim: true,
+      required: [true, 'Please specify the lesson title.'],
+    },
     scores: [
       {
         studentId: {
@@ -54,6 +58,9 @@ const examSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+//Compound unique index for semester and type
+examSchema.index({ semester: 1, type: 1, lessonId: 1 }, { unique: true });
 
 const Exam = mongoose.model('Exam', examSchema);
 

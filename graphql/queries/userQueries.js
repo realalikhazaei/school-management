@@ -1,5 +1,5 @@
 const userQuery = `#graphql
-  getAllUsers(_id: ID, role: String): [User!]
+  getAllUsers(input: GetAllUsersInput): [User!]
   getUser(_id: ID!): User
   getMe: User
 `;
@@ -8,9 +8,16 @@ const userMutation = `#graphql
   updateUser(input: UpdateUserInput!): User
   deleteUsers(_ids: [ID!]!): String
   updateMe(input: UpdateMeInput!): User
+  determineStudentsClass(input: StudentsClassInput!): String
 `;
 
 const userInput = `#graphql
+  input GetAllUsersInput {
+    _id: ID
+    role: String
+    classId: ID
+  }
+
   input UpdateUserInput {
     _id: ID!
     name: String
@@ -26,6 +33,13 @@ const userInput = `#graphql
     birthdate: String
     photo: String
     phone: String
+  }
+
+  input StudentsClassInput {
+    classId: ID!
+    classGrade: Int!
+    classAlias: String!
+    students: [ID!]
   }
 `;
 

@@ -5,12 +5,14 @@ const classSchema = new mongoose.Schema(
     alias: {
       type: String,
       trim: true,
+      required: [true, 'Please specify a name for the class.'],
     },
     grade: {
       type: Number,
       required: [true, 'Please specify the grade.'],
       min: [1, 'Grade cannot be less than 1.'],
       max: [12, 'Grade cannot be more than 12.'],
+      index: true,
       validate: {
         validator: function (val) {
           return val % 1 === 0;
@@ -23,7 +25,10 @@ const classSchema = new mongoose.Schema(
       ref: 'School',
       required: [true, 'School ID is a required field.'],
     },
-    field: String,
+    field: {
+      type: String,
+      index: true,
+    },
     timetable: [
       {
         lessonId: {

@@ -16,6 +16,7 @@ const lessonSchema = new mongoose.Schema({
     required: [true, 'Please specify the grade.'],
     min: [1, 'Grade cannot be less than 1.'],
     max: [12, 'Grade cannot be more than 12.'],
+    index: true,
     validate: {
       validator: function (val) {
         return val % 1 === 0;
@@ -23,7 +24,10 @@ const lessonSchema = new mongoose.Schema({
       message: 'Please enter an integer between 1 and 12.',
     },
   },
-  field: String,
+  field: {
+    type: String,
+    index: true,
+  },
   coefficient: {
     type: Number,
     default: 1,

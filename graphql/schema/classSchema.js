@@ -1,7 +1,7 @@
 const classSchema = `#graphql
   type Class {
     _id: ID!
-    alias: String
+    alias: String!
     grade: Int!
     school: ID!
     field: String
