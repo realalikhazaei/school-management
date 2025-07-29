@@ -32,7 +32,7 @@ const getAllExams = async (_, { input }, { accessToken }) => {
   return exams;
 };
 
-const addExam = async (_, { input }, { accessToken }) => {
+const addUpdateExam = async (_, { input }, { accessToken }) => {
   //Verify the user, take user ID
   const { _id: teacher } = await verifyToken(accessToken, 'teacher');
 
@@ -42,9 +42,13 @@ const addExam = async (_, { input }, { accessToken }) => {
 
   let exam;
   try {
-    //Create the exam document
+    //Add / Update the exam document
     input.lessonTitle = lesson.title;
-    exam = await Exam.create(input);
+    exam = await Exam.findOneAndUpdate(
+      { semester: input.semester, type: input.type, lessonId: input.lessonId },
+      input,
+      { upsert: true, new: true, runValidators: true },
+    );
   } catch ({ code, keyValue: { semester, type } }) {
     //Catch the compound unique index error
     if (code === 11000)
@@ -58,4 +62,4 @@ const addExam = async (_, { input }, { accessToken }) => {
 
 export const examQuery = { getAllExams };
 
-export const examMutation = { addExam };
+export const examMutation = { addUpdateExam };
