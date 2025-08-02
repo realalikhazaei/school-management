@@ -28,7 +28,21 @@ const activitySchema = new mongoose.Schema(
       ref: 'Lesson',
       required: [true, 'Please provide the lesson ID.'],
     },
-    lessonTitle: String,
+    lessonTitle: {
+      type: String,
+      trim: true,
+      required: [true, 'Please specify the lesson title.'],
+    },
+    class: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Class',
+      required: [true, 'Please specify the class ID.'],
+    },
+    teacher: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, 'Please specify the teacher ID.'],
+    },
     lessonWeeklyTime: {
       type: String,
       required: [true, 'Please specify lesson weekly time.'],

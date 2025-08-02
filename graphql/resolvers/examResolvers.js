@@ -32,6 +32,8 @@ const getAllExams = async (_, { input }, { accessToken }) => {
   return exams;
 };
 
+const getExam = async (_, { _id }, { accessToken }) => {};
+
 const addUpdateExam = async (_, { input }, { accessToken }) => {
   //Verify the user, take user ID
   const { _id: teacher } = await verifyToken(accessToken, 'teacher');

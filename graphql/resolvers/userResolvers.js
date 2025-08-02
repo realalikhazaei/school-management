@@ -34,8 +34,6 @@ const getAllUsers = async (_, { input }, { accessToken }) => {
     delete criteria.classId;
   }
 
-  console.log(criteria);
-
   //Find users with the criteria
   const users = await User.find(criteria);
   if (!users.length) throw new GraphQLError('No users found with the criteria.', { extensions: { code: 404 } });

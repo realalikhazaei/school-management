@@ -5,7 +5,6 @@ import lessonSchema from './schema/lessonSchema.js';
 import lessonListSchema from './schema/lessonListSchema.js';
 import activitySchema from './schema/activitySchema.js';
 import examSchema from './schema/examSchema.js';
-import homeworkSchema from './schema/homeworkSchema.js';
 import { userQuery, userMutation, userInput } from './queries/userQueries.js';
 import { schoolQuery } from './queries/schoolQueries.js';
 import { classQuery, classMutation, classInput } from './queries/classQueries.js';
@@ -25,7 +24,6 @@ const typeDefs = `#graphql
   ${lessonListSchema}
   ${activitySchema}
   ${examSchema}
-  ${homeworkSchema}
   
   #Query definition
   type Query {

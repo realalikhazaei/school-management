@@ -28,6 +28,11 @@ const examSchema = new mongoose.Schema(
       trim: true,
       required: [true, 'Please specify the lesson title.'],
     },
+    teacher: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, 'Please specify the teacher ID.'],
+    },
     scores: [
       {
         studentId: {

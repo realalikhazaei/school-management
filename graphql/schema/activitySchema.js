@@ -6,6 +6,8 @@ const activitySchema = `#graphql
     penalties: [ChildActivity]
     lessonId: ID!
     lessonTitle: String
+    class: ID!
+    teacher: ID!
     lessonWeeklyTime: String!
     createdAt: Date!
     updatedAt: Date!

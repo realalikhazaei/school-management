@@ -11,6 +11,7 @@ import typeDefs from './graphql/typeDefs.js';
 import resolvers from './graphql/resolvers.js';
 import authRoutes from './http/routes/authRoutes.js';
 import paymentRoutes from './http/routes/paymentRoutes.js';
+import homeworkRoutes from './http/routes/homeworkRoutes.js';
 import AppError from './http/utils/appError.js';
 import globalErrorHandler from './http/controllers/errorController.js';
 
@@ -32,6 +33,7 @@ await apolloServer.start();
 //Routing
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/payment', paymentRoutes);
+app.use('/api/v1/homework', homeworkRoutes);
 app.use(
   '/api/v1/graphql',
   apolloMiddleware(apolloServer, {

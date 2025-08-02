@@ -5,6 +5,7 @@ const examSchema = `#graphql
     type: String!
     lessonId: ID!
     lessonTitle: String!
+    teacher: ID!
     scores: [Score]
     createdAt: Date!
     updatedAt: Date!

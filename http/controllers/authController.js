@@ -4,6 +4,11 @@ import School from '../models/schoolModel.js';
 import AppError from '../utils/appError.js';
 import { signSendToken, verifyToken } from '../utils/accessToken.js';
 
+const getAccessToken = (req, res, next) => {
+  req.accessToken = req.cookies?.accessToken || req.headers.authorization?.split(' ')[1];
+  return next();
+};
+
 const signupSchool = async (req, res, next) => {
   const { name, code } = req.body;
 
@@ -11,7 +16,7 @@ const signupSchool = async (req, res, next) => {
 
   res.status(201).json({
     status: 'success',
-    data: school,
+    data: { school },
   });
 };
 
@@ -122,4 +127,13 @@ const resetPassword = async (req, res, next) => {
   await signSendToken(res, user._id, premiumExpires, 'Your password has been reset successfully.');
 };
 
-export default { signupSchool, signupManager, signupUsers, login, updatePassword, forgotPassword, resetPassword };
+export default {
+  getAccessToken,
+  signupSchool,
+  signupManager,
+  signupUsers,
+  login,
+  updatePassword,
+  forgotPassword,
+  resetPassword,
+};
