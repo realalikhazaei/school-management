@@ -10,18 +10,8 @@ const getAllExams = async (_, { input }, { accessToken }) => {
   //Assign the inputs to a variable for better use
   const criteria = input || {};
 
-  if (role === 'teacher') {
-    //Find the lessons belong to the teacher with user ID
-    const lessons = await Lesson.find({ teacher }, 'id');
-    const lessonIds = lessons.map(el => el.id);
-
-    //Throw an error if the teacher lesson IDs do not match the queried lesson ID
-    if (criteria?.lessonId && !lessonIds?.includes(criteria?.lessonId))
-      throw new GraphQLError('This lesson exam does not belong to you.', { extensions: { code: 403 } });
-
-    //Assign the teacher lesson IDs to the queries lesson ID in case of not existing
-    if (!criteria?.lessonId) criteria.lessonId = { $in: lessonIds };
-  }
+  //Add the teacher ID to the criteria
+  if (role === 'teacher') criteria.teacher = teacher;
 
   //Find the exams with the criteria
   const exams = await Exam.find(criteria);
@@ -32,15 +22,28 @@ const getAllExams = async (_, { input }, { accessToken }) => {
   return exams;
 };
 
-const getExam = async (_, { _id }, { accessToken }) => {};
+const getExam = async (_, args, { accessToken }) => {
+  const { _id: teacher, role } = await verifyToken(accessToken, 'manager', 'teacher');
+
+  const criteria = args;
+  if (role === 'teacher') criteria.teacher = teacher;
+
+  const exam = await Exam.findOne(criteria);
+  if (!exam) throw new GraphQLError('There is no exam found with this ID for you.', { extensions: { code: 404 } });
+
+  return exam;
+};
 
 const addUpdateExam = async (_, { input }, { accessToken }) => {
   //Verify the user, take user ID
-  const { _id: teacher } = await verifyToken(accessToken, 'teacher');
+  const { _id: teacher, role } = await verifyToken(accessToken, 'manager', 'teacher');
 
-  //Find out if the lesson belongs to the teacher
-  const lesson = await Lesson.findOne({ _id: input.lessonId, teacher });
-  if (!lesson) throw new GraphQLError('There is no lesson with this ID for you.', { extensions: { code: 404 } });
+  //Add the teacher ID to the criteria
+  if (role === 'teacher') input.teacher = teacher;
+
+  //Find the lesson, conditionally add teacher ID
+  const lesson = await Lesson.findOne({ _id: input.lessonId, ...(role === 'teacher' && { teacher }) });
+  if (!lesson) throw new GraphQLError('There is no lesson found with this ID for you.', { extensions: { code: 404 } });
 
   let exam;
   try {
@@ -62,6 +65,6 @@ const addUpdateExam = async (_, { input }, { accessToken }) => {
   return exam._doc;
 };
 
-export const examQuery = { getAllExams };
+export const examQuery = { getAllExams, getExam };
 
 export const examMutation = { addUpdateExam };

@@ -111,9 +111,7 @@ const getHomework = async (req, res, next) => {
 
   if (!req.params?._id) return next(new AppError('Please provide the homework ID.', 400));
 
-  if (role === 'teacher') {
-    req.params.teacher = teacher;
-  }
+  if (role === 'teacher') req.params.teacher = teacher;
 
   const homework = await Homework.findOne(req.params).populate('submitted');
   if (!homework) return next(new AppError('No homework found with this ID.', 404));
@@ -178,9 +176,7 @@ const deleteHomework = async (req, res, next) => {
 
   if (!req.params?._id) return next(new AppError('Please provide the homework ID.', 400));
 
-  if (role === 'teacher') {
-    req.params.teacher = teacher;
-  }
+  if (role === 'teacher') req.params.teacher = teacher;
 
   const homework = await Homework.findOneAndDelete(req.params);
   if (!homework) return next(new AppError('No homework found with the criteria.', 404));
