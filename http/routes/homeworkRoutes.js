@@ -12,6 +12,8 @@ router
   .post(homeworkController.uploadImages, homeworkController.processStudentImages, homeworkController.submitHomework);
 router.route('/student').get(homeworkController.getAllHomeworksStudent);
 
+router.patch('/:_id/scores', homeworkController.submitScores);
+
 router
   .route('/:_id')
   .get(homeworkController.getHomework)

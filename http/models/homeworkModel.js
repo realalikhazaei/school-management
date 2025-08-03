@@ -40,8 +40,13 @@ const homeworkSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   },
 );
+
+//Virtual reference field for submitted homeworks
+homeworkSchema.virtual('submitted', { ref: 'HomeworkSubmit', localField: '_id', foreignField: 'homework' });
 
 const Homework = mongoose.model('Homework', homeworkSchema);
 

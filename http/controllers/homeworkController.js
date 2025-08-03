@@ -109,12 +109,13 @@ const getAllHomeworksStudent = async (req, res, next) => {
 const getHomework = async (req, res, next) => {
   const { _id: teacher, role } = await verifyToken(req.accessToken, 'manager', 'teacher');
 
-  let criteria;
+  if (!req.params?._id) return next(new AppError('Please provide the homework ID.', 400));
+
   if (role === 'teacher') {
-    criteria = { ...req.params, teacher };
+    req.params.teacher = teacher;
   }
 
-  const homework = await Homework.findOne(criteria);
+  const homework = await Homework.findOne(req.params).populate('submitted');
   if (!homework) return next(new AppError('No homework found with this ID.', 404));
 
   res.status(200).json({
@@ -129,9 +130,12 @@ const getHomeworkStudent = async (req, res, next) => {
     studentClass: { classId },
   } = await verifyToken(req.accessToken, 'student');
 
-  const homework = await Homework.findOne({ _id: req.params._id, class: classId });
+  const { _id } = req.params;
+  if (!_id) return next(new AppError('Please provide the homework ID.', 400));
+
+  const homework = await Homework.findOne({ _id, class: classId });
   if (!homework) return next(new AppError('No homework found with this ID.', 404));
-  const homeworkSubmit = await HomeworkSubmit.findOne({ homework: req.params._id, studentId });
+  const homeworkSubmit = await HomeworkSubmit.findOne({ homework: _id, studentId });
 
   res.status(200).json({
     status: 'success',
@@ -154,7 +158,10 @@ const addHomework = async (req, res, next) => {
 const updateHomework = async (req, res, next) => {
   if (req.body.class || req.body.lessonId) return next(new AppError('You cannot modify class or lesson ID.', 403));
 
-  const homework = await Homework.findOneAndUpdate({ _id: req.params._id, teacher: req.body.teacher }, req.body, {
+  const { _id } = req.params;
+  if (!_id) return next(new AppError('Please provide the homework ID.', 400));
+
+  const homework = await Homework.findOneAndUpdate({ _id, teacher: req.body.teacher }, req.body, {
     new: true,
     runValidators: true,
   });
@@ -169,6 +176,8 @@ const updateHomework = async (req, res, next) => {
 const deleteHomework = async (req, res, next) => {
   const { _id: teacher, role } = await verifyToken(req.accessToken, 'manager', 'teacher');
 
+  if (!req.params?._id) return next(new AppError('Please provide the homework ID.', 400));
+
   if (role === 'teacher') {
     req.params.teacher = teacher;
   }
@@ -180,6 +189,33 @@ const deleteHomework = async (req, res, next) => {
     status: 'success',
     data: { homework },
     message: `A homework for ${homework.lessonTitle} lesson has been deleted successfully.`,
+  });
+};
+
+const submitScores = async (req, res, next) => {
+  const { _id: teacher, role } = await verifyToken(req.accessToken, 'manager', 'teacher');
+
+  const { _id } = req.params;
+  if (!_id) return next(new AppError('Please provide the homework ID.', 400));
+
+  if (role === 'teacher') {
+    const homework = await Homework.findOne({ _id, teacher }, '_id');
+    if (!homework) return next(new AppError('No homework found with this ID.', 404));
+  }
+
+  const scorePromises = req.body.scores?.map(async ({ score, studentId }) => {
+    return await HomeworkSubmit.findOneAndUpdate(
+      { homework: _id, studentId },
+      { score },
+      { new: true, runValidators: true },
+    );
+  });
+
+  const homeworkSubmits = await Promise.all(scorePromises);
+
+  res.status(200).json({
+    status: 'success',
+    data: { homeworkSubmits },
   });
 };
 
@@ -207,5 +243,6 @@ export default {
   addHomework,
   updateHomework,
   deleteHomework,
+  submitScores,
   submitHomework,
 };
