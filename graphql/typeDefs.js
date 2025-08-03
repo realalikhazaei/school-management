@@ -11,6 +11,7 @@ import { classQuery, classMutation, classInput } from './queries/classQueries.js
 import { lessonQuery, lessonMutation, lessonInput } from './queries/lessonQueries.js';
 import { lessonListQuery, lessonListMutation, lessonListInput } from './queries/lessonListQueries.js';
 import { examQuery, examMutation, examInput } from './queries/examQueries.js';
+import { activityQuery, activityMutation, activityInput } from './queries/activityQueries.js';
 
 const typeDefs = `#graphql
   #Custom types
@@ -33,6 +34,7 @@ const typeDefs = `#graphql
     ${lessonQuery}
     ${lessonListQuery}
     ${examQuery}
+    ${activityQuery}
   }
 
   #Mutation definition
@@ -42,6 +44,7 @@ const typeDefs = `#graphql
     ${lessonMutation}
     ${lessonListMutation}
     ${examMutation}
+    ${activityMutation}
   }
 
   #Custom inputs
@@ -50,6 +53,7 @@ const typeDefs = `#graphql
   ${lessonInput}
   ${lessonListInput}
   ${examInput}
+  ${activityInput}
 `;
 
 export default typeDefs;
