@@ -5,12 +5,14 @@ import lessonSchema from './schema/lessonSchema.js';
 import lessonListSchema from './schema/lessonListSchema.js';
 import activitySchema from './schema/activitySchema.js';
 import examSchema from './schema/examSchema.js';
+import examScoreSchema from './schema/examScoreSchema.js';
 import { userQuery, userMutation, userInput } from './queries/userQueries.js';
 import { schoolQuery } from './queries/schoolQueries.js';
 import { classQuery, classMutation, classInput } from './queries/classQueries.js';
 import { lessonQuery, lessonMutation, lessonInput } from './queries/lessonQueries.js';
 import { lessonListQuery, lessonListMutation, lessonListInput } from './queries/lessonListQueries.js';
 import { examQuery, examMutation, examInput } from './queries/examQueries.js';
+import { examScoreQuery, examScoreMutation, examScoreInput } from './queries/examScoreQueries.js';
 import { activityQuery, activityMutation, activityInput } from './queries/activityQueries.js';
 
 const typeDefs = `#graphql
@@ -25,6 +27,7 @@ const typeDefs = `#graphql
   ${lessonListSchema}
   ${activitySchema}
   ${examSchema}
+  ${examScoreSchema}
   
   #Query definition
   type Query {
@@ -34,6 +37,7 @@ const typeDefs = `#graphql
     ${lessonQuery}
     ${lessonListQuery}
     ${examQuery}
+    ${examScoreQuery}
     ${activityQuery}
   }
 
@@ -44,6 +48,7 @@ const typeDefs = `#graphql
     ${lessonMutation}
     ${lessonListMutation}
     ${examMutation}
+    ${examScoreMutation}
     ${activityMutation}
   }
 
@@ -53,6 +58,7 @@ const typeDefs = `#graphql
   ${lessonInput}
   ${lessonListInput}
   ${examInput}
+  ${examScoreInput}
   ${activityInput}
 `;
 

@@ -70,7 +70,7 @@ const getActivity = async (_, { _id }, { accessToken }) => {
   const activity = await Activity.findOne(criteria);
   if (!activity) throw new GraphQLError('No activity found with this ID', { extensions: { code: 404 } });
 
-  return activity;
+  return activity._doc;
 };
 
 const addUpdateActivity = async (_, { input }, { accessToken }) => {
@@ -105,7 +105,7 @@ const addUpdateActivity = async (_, { input }, { accessToken }) => {
     activity = await Activity.create(input);
   }
 
-  return activity;
+  return activity._doc;
 };
 
 const deleteActivity = async (_, { _id }, { accessToken }) => {

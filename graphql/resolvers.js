@@ -4,6 +4,7 @@ import { classQuery, classMutation } from './resolvers/classResolvers.js';
 import { lessonQuery, lessonMutation } from './resolvers/lessonResolvers.js';
 import { lessonListQuery, lessonListMutation } from './resolvers/lessonListResolvers.js';
 import { examQuery, examMutation } from './resolvers/examResolvers.js';
+import { examScoreQuery, examScoreMutation } from './resolvers/examScoreResolvers.js';
 import { activityQuery, activityMutation } from './resolvers/activityResolvers.js';
 import dateScalar from './scalars/dateScalar.js';
 
@@ -15,6 +16,7 @@ const resolvers = {
     ...lessonQuery,
     ...lessonListQuery,
     ...examQuery,
+    ...examScoreQuery,
     ...activityQuery,
   },
 
@@ -24,6 +26,7 @@ const resolvers = {
     ...lessonMutation,
     ...lessonListMutation,
     ...examMutation,
+    ...examScoreMutation,
     ...activityMutation,
   },
 

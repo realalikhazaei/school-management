@@ -5,6 +5,7 @@ const examQuery = `#graphql
 
 const examMutation = `#graphql
   addUpdateExam(input: AddUpdateExamInput!): Exam
+  deleteExam(_id: ID!): String
 `;
 
 const examInput = `#graphql
@@ -19,14 +20,6 @@ const examInput = `#graphql
     semester: Int!
     type: String!
     lessonId: ID!
-    scores: [ScoreInput!]
-  }
-
-  input ScoreInput {
-    studentId: ID!
-    studentFirstname: String!
-    studentLastname: String!
-    score: Int
   }
 `;
 

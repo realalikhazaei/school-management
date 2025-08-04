@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 
 const homeworkSubmitSchema = new mongoose.Schema(
   {
+    homework: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Homework',
+      required: [true, 'Please provide the homework ID.'],
+    },
     studentId: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
@@ -18,11 +23,6 @@ const homeworkSubmitSchema = new mongoose.Schema(
       trim: true,
       index: true,
       required: [true, 'Please provide the student last name.'],
-    },
-    homework: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Homework',
-      required: [true, 'Please provide the homework ID.'],
     },
     images: [String],
     score: {

@@ -65,6 +65,17 @@ const addUpdateExam = async (_, { input }, { accessToken }) => {
   return exam._doc;
 };
 
+const deleteExam = async (_, args, { accessToken }) => {
+  const { _id: teacher, role } = await verifyToken(accessToken, 'manager', 'teacher');
+
+  if (role === 'teacher') args.teacher = teacher;
+
+  const exam = await Exam.findOneAndDelete(args);
+  if (!exam) throw new GraphQLError('No exam found with this ID for you.', { extensions: { code: 404 } });
+
+  return `${exam.lessonTitle} exam has been deleted successfully.`;
+};
+
 export const examQuery = { getAllExams, getExam };
 
-export const examMutation = { addUpdateExam };
+export const examMutation = { addUpdateExam, deleteExam };
