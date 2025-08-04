@@ -6,15 +6,14 @@ import dateRange from '../../http/utils/dateRange.js';
 
 const getAllActivities = async (_, { input }, { accessToken }) => {
   //Verify user and get user role and ID
-  const { _id: teacher, role } = await verifyToken(accessToken, 'manager', 'teacher');
+  const { _id: teacher, role } = await verifyToken(accessToken, 'manager', 'teacher', 'student');
 
   //Add teacher ID on the query input
   if (role === 'teacher') input.teacher = teacher;
 
   //Restructure date range in case of existing on query input
   if (input.dateRange) {
-    const date = dateRange(input.dateRange);
-    input.createdAt = date;
+    input.createdAt = dateRange(input.dateRange);
     delete input.dateRange;
   }
 
@@ -23,6 +22,42 @@ const getAllActivities = async (_, { input }, { accessToken }) => {
 
   //Throw an error if no activities found
   if (!activities.length) throw new GraphQLError('No activity found with the criteria.', { extensions: { code: 404 } });
+
+  return activities;
+};
+
+const getMyActivity = async (_, { input }, { accessToken }) => {
+  //Verify student and get student ID and class
+  const {
+    _id: studentId,
+    studentClass: { classId },
+  } = await verifyToken(accessToken, 'student');
+
+  //Add the class ID on the query input
+  input.class = classId;
+
+  //Restructure date range in case of existing on query input
+  if (input.dateRange) {
+    input.createdAt = dateRange(input.dateRange);
+    delete input.dateRange;
+  }
+
+  //Filter for activities which include the student
+  const studentActivity = ['absences', 'points', 'penalties'].map(field => {
+    const obj = {};
+    obj[field] = { $elemMatch: { studentId } };
+    return obj;
+  });
+
+  //Find all activities with the options
+  const activities = await Activity.find({ ...input, $or: studentActivity });
+
+  //Filter-out other students activity documents
+  for (const activity of activities) {
+    ['absences', 'points', 'penalties'].forEach(
+      field => (activity[field] = activity[field]?.find(el => el.studentId.toString() === studentId.toString())),
+    );
+  }
 
   return activities;
 };
@@ -84,6 +119,6 @@ const deleteActivity = async (_, { _id }, { accessToken }) => {
   return `Activity for ${activity.lessonTitle} lesson has been deleted successfully.`;
 };
 
-export const activityQuery = { getAllActivities, getActivity };
+export const activityQuery = { getAllActivities, getMyActivity, getActivity };
 
 export const activityMutation = { addUpdateActivity, deleteActivity };

@@ -1,5 +1,6 @@
 const activityQuery = `#graphql
   getAllActivities(input: GetAllActivitiesInput): [Activity!]
+  getMyActivity(input: GetMyActivityInput): [Activity]
   getActivity(_id: ID!): Activity
 `;
 
@@ -14,6 +15,11 @@ const activityInput = `#graphql
     lessonId: ID
     lessonWeeklyTime: String
     teacher: ID
+    dateRange: [String]
+  }
+
+  input GetMyActivityInput {
+    lessonId: ID
     dateRange: [String]
   }
 
