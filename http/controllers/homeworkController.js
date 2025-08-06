@@ -3,6 +3,7 @@ import Lesson from '../models/lessonModel.js';
 import Homework from '../models/homeworkModel.js';
 import HomeworkSubmit from '../models/homeworkSubmitModel.js';
 import AppError from '../utils/appError.js';
+import QueryFeatures from '../utils/queryFeatures.js';
 import multerUpload from '../utils/multerUpload.js';
 import { verifyToken } from '../utils/accessToken.js';
 
@@ -79,12 +80,15 @@ const processStudentImages = async (req, res, next) => {
 const getAllHomeworks = async (req, res, next) => {
   const { _id: teacher, role } = await verifyToken(req.accessToken, 'manager', 'teacher');
 
-  let criteria = {};
+  const queryStr = { ...req.query };
+
   if (role === 'teacher') {
-    criteria = { teacher };
+    queryStr.teacher = teacher;
   }
 
-  const homeworks = await Homework.find(criteria);
+  const queryFeatures = new QueryFeatures(Homework.find(), queryStr).filter().project();
+
+  const homeworks = await queryFeatures.query;
 
   res.status(200).json({
     status: 'success',
@@ -97,7 +101,11 @@ const getAllHomeworksStudent = async (req, res, next) => {
     studentClass: { classId },
   } = await verifyToken(req.accessToken, 'student');
 
-  const homeworks = await Homework.find({ class: classId });
+  const queryStr = { ...req.query, class: classId };
+
+  const queryFeatures = new QueryFeatures(Homework.find(), queryStr).filter().project();
+
+  const homeworks = await queryFeatures.query;
   if (!homeworks.length) return next(new AppError('There is no homework for you yet.', 404));
 
   res.status(200).json({
