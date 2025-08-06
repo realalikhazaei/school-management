@@ -10,7 +10,7 @@ mongoose.connection.on('error', err => {
 });
 
 const dbConnect = async () => {
-  await mongoose.connect(process.env.DATABASE_CONNECT);
+  await mongoose.connect(process.env.MONGO_CONNECT);
 };
 
 const dbDisconnect = async () => {

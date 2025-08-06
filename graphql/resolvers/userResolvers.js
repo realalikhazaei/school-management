@@ -1,7 +1,10 @@
+import { GraphQLError } from 'graphql';
+import mongoose from 'mongoose';
 import User from '../../http/models/userModel.js';
 import Lesson from '../../http/models/lessonModel.js';
+import ExamScore from '../../http/models/examScoreModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
-import { GraphQLError } from 'graphql';
+import queueJob from '../../http/utils/queueJob.js';
 
 const getAllUsers = async (_, { input }, { accessToken }) => {
   //Verify the user, take user ID and user role
@@ -96,6 +99,59 @@ const determineStudentsClass = async (_, { input }, { accessToken }) => {
   return `${determinedClass.modifiedCount} student(s) have been added to the class ${input.classAlias}.`;
 };
 
+const calculateReportCard = async (_, { input }, { accessToken }) => {
+  //Restrict access to manager only
+  await verifyToken(accessToken, 'manager');
+
+  //Create suitable search criteria with conditional properties
+  const criteria = {
+    role: 'student',
+    ...(input.students && { _id: { $in: input?.students } }),
+    ...(input.classId && { 'studentClass.classId': input?.classId }),
+    ...(input.classGrade && { 'studentClass.classGrade': input?.classGrade }),
+  };
+
+  //Find students with the criteria
+  const students = await User.find(criteria);
+
+  //Throw an error in case of matching none
+  if (!students.length) throw new GraphQLError('No students found with this criteria.', { extensions: { code: 404 } });
+
+  //Store students IDs into an array
+  const studentIDs = students?.map(el => el.id);
+
+  //A function to be called with the queue containing transactions
+  const calculateTransaction = async function (studentId) {
+    //Starting a session
+    const session = await mongoose.startSession();
+
+    //Starting the transaction
+    await session.withTransaction(async () => {
+      //Finding exam scores with students IDs and populating exams
+      const examScores = await ExamScore.find({ studentId }, 'score exam').populate({
+        path: 'exam',
+        select: 'semester type lessonTitle',
+      });
+
+      //Restructure exam data for student report card
+      const formattedExamScores = examScores.map(({ score, exam }) => {
+        return { semester: exam.semester, type: exam.type, lessonTitle: exam.lessonTitle, score };
+      });
+
+      //Update user with restructred data
+      await User.findByIdAndUpdate(studentId, { studentReport: formattedExamScores }, { runValidators: true });
+
+      return;
+    });
+  };
+
+  //Running the queue with students
+  queueJob('Report Card', studentIDs, calculateTransaction);
+
+  //Return a string with the number of students
+  return `${students.length} student(s) have been queued for calculating report card.`;
+};
+
 export const userQuery = { getAllUsers, getUser, getMe };
 
-export const userMutation = { updateUser, updateMe, deleteUsers, determineStudentsClass };
+export const userMutation = { updateUser, updateMe, deleteUsers, determineStudentsClass, calculateReportCard };

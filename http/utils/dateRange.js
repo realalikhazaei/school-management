@@ -1,3 +1,7 @@
+/**
+ *
+ * @param {Date[]} dates
+ */
 const dateRange = function (dates) {
   const date1 = new Date(dates[0]);
   const date2 = new Date(dates[1]);

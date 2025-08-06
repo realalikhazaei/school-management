@@ -1,4 +1,9 @@
 const QueryFeatures = class {
+  /**
+   *
+   * @param {object} query
+   * @param {object} queryStr
+   */
   constructor(query, queryStr) {
     this.query = query;
     this.queryStr = queryStr;

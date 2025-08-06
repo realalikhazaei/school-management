@@ -1,4 +1,9 @@
 const AppError = class extends Error {
+  /**
+   *
+   * @param {String} message
+   * @param {Number} statusCode
+   */
   constructor(message, statusCode) {
     super();
     this.message = message;
