@@ -18,13 +18,13 @@ const lessonInput = `#graphql
   }
 
   input AddLessonsInput {
-    class: ID!
-    title: String!
-    grade: Int!
+    class: ID
+    title: String
+    grade: Int
     field: String
     coefficient: Int
-    weeklyTimes: [String!]!
-    teacher: ID!
+    weeklyTimes: [String]
+    teacher: ID
   }
   
   input UpdateLessonsInput {
@@ -34,7 +34,7 @@ const lessonInput = `#graphql
     grade: Int
     field: String
     coefficient: Int
-    weeklyTimes: [String!]
+    weeklyTimes: [String]
     teacher: ID
   }
 `;

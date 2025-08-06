@@ -33,7 +33,15 @@ const getLesson = async (_, args, { accessToken }) => {
 const addLessons = async (_, { input }, { accessToken }) => {
   await verifyToken(accessToken, 'manager');
 
-  const lessons = await Lesson.create(input);
+  let lessons;
+  try {
+    lessons = await Lesson.create(input);
+  } catch ({ code, keyValue: { title, grade, field } }) {
+    if (code === 11000)
+      throw new GraphQLError(`${title} lesson for grade ${grade} in field ${field} is already defined.`, {
+        extensions: { code: 400 },
+      });
+  }
 
   return lessons;
 };
@@ -47,8 +55,17 @@ const updateLessons = async (_, { input }, { accessToken }) => {
     return await Lesson.findByIdAndUpdate(_id, input, { new: true, runValidators: true });
   });
 
-  const lessons = await Promise.all(query);
-  if (!lessons.length) throw new GraphQLError('No lesson found with the specified IDs.', { extensions: { code: 404 } });
+  let lessons;
+  try {
+    lessons = await Promise.all(query);
+    if (!lessons.length)
+      throw new GraphQLError('No lesson found with the specified IDs.', { extensions: { code: 404 } });
+  } catch ({ code, keyValue: { title, grade, field } }) {
+    if (code === 11000)
+      throw new GraphQLError(`${title} lesson for grade ${grade} in field ${field} is already defined.`, {
+        extensions: { code: 400 },
+      });
+  }
 
   return lessons;
 };

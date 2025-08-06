@@ -16,7 +16,6 @@ const lessonSchema = new mongoose.Schema({
     required: [true, 'Please specify the grade.'],
     min: [1, 'Grade cannot be less than 1.'],
     max: [12, 'Grade cannot be more than 12.'],
-    index: true,
     validate: {
       validator: function (val) {
         return val % 1 === 0;
@@ -26,7 +25,7 @@ const lessonSchema = new mongoose.Schema({
   },
   field: {
     type: String,
-    index: true,
+    trim: true,
   },
   coefficient: {
     type: Number,
@@ -48,6 +47,8 @@ const lessonSchema = new mongoose.Schema({
     required: [true, 'Please specify the teacher ID.'],
   },
 });
+
+lessonSchema.index({ title: 1, grade: 1, field: 1 }, { unique: true });
 
 const Lesson = mongoose.model('Lesson', lessonSchema);
 

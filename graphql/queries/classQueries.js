@@ -21,7 +21,7 @@ const classInput = `#graphql
 
   input CreateClassInput {
     alias: String
-    grade: Int!
+    grade: Int
     field: String
   }
 

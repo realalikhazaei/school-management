@@ -2,6 +2,7 @@ const userQuery = `#graphql
   getAllUsers(input: GetAllUsersInput): [User!]
   getUser(_id: ID!): User
   getMe: User
+  # calculateReportCard
 `;
 
 const userMutation = `#graphql
@@ -36,10 +37,10 @@ const userInput = `#graphql
   }
 
   input StudentsClassInput {
-    classId: ID!
-    classGrade: Int!
-    classAlias: String!
-    students: [ID!]
+    classId: ID
+    classGrade: Int
+    classAlias: String
+    students: [ID]
   }
 `;
 

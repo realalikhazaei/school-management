@@ -16,9 +16,11 @@ const addLessonList = async (_, { input }, { accessToken }) => {
   let lessonList;
   try {
     lessonList = await LessonList.create(input);
-  } catch ({ code, keyValue: { title, grade } }) {
+  } catch ({ code, keyValue: { title, grade, field } }) {
     if (code === 11000)
-      throw new GraphQLError(`${title} lesson for grade ${grade} is already defined.`, { extensions: { code: 400 } });
+      throw new GraphQLError(`${title} lesson for grade ${grade} in field ${field} is already defined.`, {
+        extensions: { code: 400 },
+      });
   }
 
   return lessonList;
@@ -33,9 +35,17 @@ const updateLessonList = async (_, { input }, { accessToken }) => {
     return await LessonList.findByIdAndUpdate(_id, input, { new: true, runValidators: true });
   });
 
-  const lessonList = await Promise.all(query);
-  if (!lessonList.length)
-    throw new GraphQLError('No lesson found with the specified IDs.', { extensions: { code: 404 } });
+  let lessonList;
+  try {
+    lessonList = await Promise.all(query);
+    if (!lessonList.length)
+      throw new GraphQLError('No lesson found with the specified IDs.', { extensions: { code: 404 } });
+  } catch ({ code, keyValue: { title, grade, field } }) {
+    if (code === 11000)
+      throw new GraphQLError(`${title} lesson for grade ${grade} in field ${field} is already defined.`, {
+        extensions: { code: 400 },
+      });
+  }
 
   return lessonList;
 };

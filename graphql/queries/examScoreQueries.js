@@ -16,13 +16,13 @@ const examScoreInput = `#graphql
 
   input SubmitExamScoreInput {
     exam: ID!
-    scores: [ScoreInput!]
+    scores: [ScoreInput]
   }
 
   input ScoreInput {
-    studentId: ID!
-    studentFirstname: String!
-    studentLastname: String!
+    studentId: ID
+    studentFirstname: String
+    studentLastname: String
     score: Int
   }
 `;

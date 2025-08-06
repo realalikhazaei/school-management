@@ -16,8 +16,8 @@ const lessonListInput = `#graphql
 
   input AddLessonListInput {
     _id: ID
-    title: String!
-    grade: Int!
+    title: String
+    grade: Int
     field: String
     coefficient: Int
   }

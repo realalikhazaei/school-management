@@ -17,9 +17,9 @@ const examInput = `#graphql
   }
 
   input AddUpdateExamInput {
-    semester: Int!
-    type: String!
-    lessonId: ID!
+    semester: Int
+    type: String
+    lessonId: ID
   }
 `;
 

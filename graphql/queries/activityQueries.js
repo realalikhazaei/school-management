@@ -25,17 +25,17 @@ const activityInput = `#graphql
 
   input AddUpdateActivityInput {
     _id: ID
-    lessonId: ID!
-    lessonWeeklyTime: String!
+    lessonId: ID
+    lessonWeeklyTime: String
     absences: [ChildActivityInput]
     points: [ChildActivityInput]
     penalties: [ChildActivityInput]
   }
 
   input ChildActivityInput {
-    studentId: ID!
-    studentFirstname: String!
-    studentLastname: String!
+    studentId: ID
+    studentFirstname: String
+    studentLastname: String
   }
 `;
 
