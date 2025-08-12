@@ -3,7 +3,7 @@ const classSchema = `#graphql
     _id: ID!
     alias: String!
     grade: Int!
-    school: ID!
+    school: School!
     field: String
     timetable: [Timetable]
   }

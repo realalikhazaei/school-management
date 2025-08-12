@@ -1,13 +1,13 @@
 const lessonSchema = `#graphql
   type Lesson {
     _id: ID!
-    class: ID!
+    class: Class!
     title: String!
     grade: Int!
     field: String
     coefficient: Int!
     weeklyTimes: [String!]!
-    teacher: ID!
+    teacher: User!
   }
 `;
 

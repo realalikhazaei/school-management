@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 import Exam from '../../http/models/examModel.js';
 import Lesson from '../../http/models/lessonModel.js';
+import User from '../../http/models/userModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 
 const getAllExams = async (_, { input }, { accessToken }) => {
@@ -76,6 +77,12 @@ const deleteExam = async (_, args, { accessToken }) => {
   return `${exam.lessonTitle} exam has been deleted successfully.`;
 };
 
+const teacher = async parent => User.findById(parent.teacher);
+
+const populateLesson = async parent => Lesson.findById(parent.lessonId);
+
 export const examQuery = { getAllExams, getExam };
 
 export const examMutation = { addUpdateExam, deleteExam };
+
+export const examPopulation = { teacher, lessonId: populateLesson };

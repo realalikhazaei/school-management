@@ -7,7 +7,7 @@ const activitySchema = `#graphql
     lessonId: ID!
     lessonTitle: String
     class: ID!
-    teacher: ID!
+    teacher: User!
     lessonWeeklyTime: String!
     createdAt: Date!
     updatedAt: Date!

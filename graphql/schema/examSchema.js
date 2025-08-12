@@ -3,9 +3,9 @@ const examSchema = `#graphql
     _id: ID!
     semester: Int!
     type: String!
-    lessonId: ID!
+    lessonId: Lesson!
     lessonTitle: String!
-    teacher: ID!
+    teacher: User!
     createdAt: Date!
     updatedAt: Date!
   }

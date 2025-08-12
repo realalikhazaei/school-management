@@ -1,5 +1,7 @@
 import { GraphQLError } from 'graphql';
 import Lesson from '../../http/models/lessonModel.js';
+import Class from '../../http/models/classModel.js';
+import User from '../../http/models/userModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 
 const getAllLessons = async (_, { input }, { accessToken }) => {
@@ -79,6 +81,12 @@ const deleteLessons = async (_, { _ids }, { accessToken }) => {
   return `${deletedCount} lesson(s) have been deleted successfully.`;
 };
 
+const populateClass = async parent => Class.findById(parent.class);
+
+const teacher = async parent => User.findById(parent.teacher);
+
 export const lessonQuery = { getAllLessons, getLesson };
 
 export const lessonMutation = { addLessons, updateLessons, deleteLessons };
+
+export const lessonPopulation = { class: populateClass, teacher };

@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 import Class from '../../http/models/classModel.js';
-import Lesson from '../../http/models/lessonModel.js';
+import School from '../../http/models/schoolModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 
 const getAllClasses = async (_, { input }, { accessToken }) => {
@@ -100,6 +100,10 @@ const determineClassTimetable = async (_, { _id }, { accessToken }) => {
   return classDoc._doc;
 };
 
+const school = async parent => School.findById(parent.school);
+
 export const classQuery = { getAllClasses, getClass, getMyClass, getMyTimetable, getClassTimetable };
 
 export const classMutation = { createClass, updateClass, deleteClass, determineClassTimetable };
+
+export const classPopulation = { school };

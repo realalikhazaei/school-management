@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import User from '../../http/models/userModel.js';
 import Lesson from '../../http/models/lessonModel.js';
 import ExamScore from '../../http/models/examScoreModel.js';
+import School from '../../http/models/schoolModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 import queueJob from '../../http/utils/queueJob.js';
 
@@ -152,6 +153,10 @@ const calculateReportCard = async (_, { input }, { accessToken }) => {
   return `${students.length} student(s) have been queued for calculating report card.`;
 };
 
+const school = async parent => School.findById(parent.school);
+
 export const userQuery = { getAllUsers, getUser, getMe };
 
 export const userMutation = { updateUser, updateMe, deleteUsers, determineStudentsClass, calculateReportCard };
+
+export const userPopulation = { school };

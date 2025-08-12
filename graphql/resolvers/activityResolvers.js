@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql';
 import Activity from '../../http/models/activityModel.js';
 import Lesson from '../../http/models/lessonModel.js';
+import User from '../../http/models/userModel.js';
 import { verifyToken } from '../../http/utils/accessToken.js';
 import dateRange from '../../http/utils/dateRange.js';
 
@@ -119,6 +120,10 @@ const deleteActivity = async (_, { _id }, { accessToken }) => {
   return `Activity for ${activity.lessonTitle} lesson has been deleted successfully.`;
 };
 
+const teacher = async parent => User.findById(parent.teacher);
+
 export const activityQuery = { getAllActivities, getMyActivity, getActivity };
 
 export const activityMutation = { addUpdateActivity, deleteActivity };
+
+export const activityPopulation = { teacher };

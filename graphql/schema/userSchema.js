@@ -9,7 +9,7 @@ const userSchema = `#graphql
     role: String
     photo: String
     phone: String!
-    school: ID
+    school: School!
     studentClass: studentClass
     studentReport: [studentReport!]
   }
